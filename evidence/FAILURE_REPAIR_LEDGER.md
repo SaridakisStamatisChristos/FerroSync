@@ -60,5 +60,18 @@
 - **Earliest invalidated phase:** VERIFY test harness only.
 - **Repair:** drive the case-collision invariant through synthetic `Snapshot` entries so the logical portable-namespace policy is tested independently of host filesystem case semantics; compare the injected permission-denial path against `SyncPair.left` after `Path.resolve()`.
 - **Runtime source impact:** none.
-- **Reverification:** PENDING full Linux/macOS/Windows × Python 3.10/3.13 matrix.
+- **Reverification:** GitHub Actions run `38155668644` executed all six Linux/macOS/Windows × Python 3.10/3.13 test suites; all six product/adversarial/property/crash test steps passed. Windows then exposed the independent manifest portability issue recorded as F-006.
+- **Status:** CLOSED / VERIFIED for the test-harness repair.
+
+## F-006 — evidence manifest depended on host checkout line endings
+
+- **Phase discovered:** VERIFY / remote CI.
+- **Reproducer/evidence:** GitHub Actions run `38155668644`. Linux and macOS completed tests, manifest verification, wheel build, and installed CLI smoke successfully. Both Windows lanes passed the full 47-test suite, then failed only at `python scripts/verify_manifest.py` with `manifest mismatch`.
+- **Observed behavior:** authoritative source bytes were hashed from the working tree; Windows checkout line-ending conversion can materialize text files differently from the LF bytes used to generate the committed manifest.
+- **Affected requirement:** R27 evidence-manifest verification on every supported CI lane.
+- **Root cause:** repository lacked an explicit cross-platform text EOL policy, so byte-level evidence hashes depended on Git checkout configuration.
+- **Earliest invalidated phase:** MANIFEST / EVIDENCE tooling only.
+- **Repair:** add `.gitattributes` with a repository-wide LF policy for text and explicit binary patterns, then regenerate the manifest to include that policy file.
+- **Runtime source impact:** none.
+- **Reverification:** PENDING full matrix on the repair commit.
 - **Status:** REPAIR APPLIED / REVERIFY PENDING.
