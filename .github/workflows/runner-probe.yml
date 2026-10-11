@@ -1,0 +1,19 @@
+name: Runner Probe
+
+on:
+  push:
+    branches:
+      - diagnostic/runner-probe
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hosted runner allocation probe
+        run: |
+          echo "GitHub-hosted runner allocated"
+          uname -a
+          python --version
