@@ -69,9 +69,10 @@
 - **Reproducer/evidence:** GitHub Actions run `38155668644`. Linux and macOS completed tests, manifest verification, wheel build, and installed CLI smoke successfully. Both Windows lanes passed the full 47-test suite, then failed only at `python scripts/verify_manifest.py` with `manifest mismatch`.
 - **Observed behavior:** authoritative source bytes were hashed from the working tree; Windows checkout line-ending conversion can materialize text files differently from the LF bytes used to generate the committed manifest.
 - **Affected requirement:** R27 evidence-manifest verification on every supported CI lane.
-- **Root cause:** repository lacked an explicit cross-platform text EOL policy, so byte-level evidence hashes depended on Git checkout configuration.
+- **Root cause:** the verifier hashed checkout-materialized bytes rather than canonical repository blobs, so evidence depended on host checkout conversion.
 - **Earliest invalidated phase:** MANIFEST / EVIDENCE tooling only.
-- **Repair:** add `.gitattributes` with a repository-wide LF policy for text and explicit binary patterns, then regenerate the manifest to include that policy file.
+- **Repair attempt 1:** added a repository-wide LF `.gitattributes` policy. Run `38155953536` showed that this broadened the mismatch because historical blobs with pre-existing line endings were rematerialized differently on checkout.
+- **Final repair:** remove the checkout-policy workaround and make `scripts/verify_manifest.py` hash canonical Git index blobs (`git show :path`) when available, falling back to working-tree bytes only outside a Git checkout. The manifest therefore attests repository content rather than platform-specific checkout materialization.
 - **Runtime source impact:** none.
-- **Reverification:** PENDING full matrix on the repair commit.
+- **Reverification:** PENDING full matrix on the canonical-blob verifier commit.
 - **Status:** REPAIR APPLIED / REVERIFY PENDING.
