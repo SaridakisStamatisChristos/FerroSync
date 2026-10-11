@@ -49,3 +49,16 @@
 - **Reverification:** attempt 2 reproduced the identical result on all six jobs: failure before runner assignment, no steps/logs.
 - **Loop rule:** no further unchanged retry is permitted under R7 without a changed external premise (for example account Actions/billing/runner availability).
 - **Status:** BLOCKED / UNVERIFIED cross-platform CI; local gates remain VERIFIED.
+
+## F-005 — cross-platform adversarial tests encoded filesystem-path assumptions
+
+- **Phase discovered:** VERIFY / remote CI after hosted runners became available.
+- **Reproducer/evidence:** GitHub Actions run `38154408061`, retry attempt after the repository became public. Ubuntu lanes passed, while macOS/Windows executed the suite and exposed two adversarial-test portability defects.
+- **Observed behavior:** `test_casefold_collision_fails_safe` could not reliably create both `A.txt` and `a.txt` on case-insensitive filesystems; `test_permission_error_during_scan_is_rejected` compared an uncanonicalized temporary path to the canonicalized `SyncPair.left` root, so the injected denial was bypassed on macOS `/var` -> `/private/var` and normalized Windows paths.
+- **Violated requirement:** R24 cross-platform verification quality; the product invariant itself was not falsified by these two failures.
+- **Root cause:** test harness assumed Linux-like namespace/path identity rather than testing the logical namespace and canonicalized scan root directly.
+- **Earliest invalidated phase:** VERIFY test harness only.
+- **Repair:** drive the case-collision invariant through synthetic `Snapshot` entries so the logical portable-namespace policy is tested independently of host filesystem case semantics; compare the injected permission-denial path against `SyncPair.left` after `Path.resolve()`.
+- **Runtime source impact:** none.
+- **Reverification:** PENDING full Linux/macOS/Windows × Python 3.10/3.13 matrix.
+- **Status:** REPAIR APPLIED / REVERIFY PENDING.

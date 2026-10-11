@@ -6,7 +6,7 @@ from pathlib import Path
 from unittest import mock
 
 from ferrosync.engine import SyncPair
-from ferrosync.errors import ConflictError, PathSafetyError, RecoveryRequired, StalePlanError
+from ferrosync.errors import PathSafetyError, RecoveryRequired, StalePlanError
 from ferrosync.model import Entry, Snapshot
 from ferrosync.planner import build_plan
 
@@ -34,12 +34,15 @@ class AdversarialTests(unittest.TestCase):
         self.assertEqual((self.r/"a").read_text(), "right-raced")
 
     def test_casefold_collision_fails_safe(self):
-        (self.l/"A.txt").write_text("one")
-        (self.l/"a.txt").write_text("two")
-        plan = self.p.plan()
+        # Exercise the portable logical namespace directly. Some CI filesystems
+        # are case-insensitive and cannot physically represent both spellings.
+        left = Snapshot({
+            "A.txt": Entry("A.txt", "file", digest="0" * 64, size=3),
+            "a.txt": Entry("a.txt", "file", digest="1" * 64, size=3),
+        })
+        plan = build_plan(left, Snapshot({}), None)
         self.assertTrue(any(c.kind == "case-collision" for c in plan.conflicts))
-        with self.assertRaises(ConflictError):
-            self.p.sync()
+        self.assertFalse(plan.operations)
 
     def test_file_directory_collision_is_conflict(self):
         (self.l/"x").write_text("file")
@@ -76,7 +79,10 @@ class AdversarialTests(unittest.TestCase):
         import ferrosync.scanner as scanner
         original = scanner.os.scandir
         def denied(path):
-            if Path(path) == self.l:
+            # SyncPair canonicalizes roots. Compare against that canonical root
+            # so macOS /var -> /private/var and Windows path normalization do
+            # not bypass the injected permission failure.
+            if Path(path).resolve() == self.p.left:
                 raise PermissionError(errno.EACCES, "denied")
             return original(path)
         with mock.patch("ferrosync.scanner.os.scandir", side_effect=denied):
