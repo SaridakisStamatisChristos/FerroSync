@@ -22,8 +22,8 @@
 - **Root cause:** sandbox network restriction, not repository packaging metadata.
 - **Earliest invalidated phase:** PACKAGE evidence method only.
 - **Repair/evidence change:** did not repeat unchanged network action. Used system-installed `setuptools 82.0.1`/`wheel 0.46.3` with `pip wheel --no-build-isolation`, then installed the produced wheel into a fresh venv with `--no-index --find-links`.
-- **Reverification:** wheel built; `ferrosync 0.1.0`; installed CLI sync + verify smoke passed.
-- **Status:** CLOSED for local package evidence; GitHub CI package lanes remain to be observed.
+- **Reverification:** local wheel build + clean-venv sync/verify smoke passed; GitHub Actions run `38156641062` also built the wheel and passed installed CLI smoke on all six declared matrix lanes.
+- **Status:** CLOSED / VERIFIED.
 
 ## F-003 — no-clobber hardening patch temporarily displaced execution method
 
@@ -46,9 +46,9 @@
 - **Root-cause classification:** external hosted-runner/pre-execution availability; no product-code failure was observed. Exact account-side cause is not exposed by the available connector metadata.
 - **Earliest invalidated phase:** VERIFY evidence only; CONTRACT/SPEC/implementation are not invalidated by a job that never executed.
 - **Changed evidence path:** checked GitHub public status (Actions reported operational) and performed one failed-jobs retry as attempt 2 to falsify a transient runner-assignment hypothesis.
-- **Reverification:** attempt 2 reproduced the identical result on all six jobs: failure before runner assignment, no steps/logs.
-- **Loop rule:** no further unchanged retry is permitted under R7 without a changed external premise (for example account Actions/billing/runner availability).
-- **Status:** BLOCKED / UNVERIFIED cross-platform CI; local gates remain VERIFIED.
+- **Reverification:** attempt 2 reproduced the identical result on all six jobs: failure before runner assignment, no steps/logs. The repository owner then reported that private-repository Actions minutes were exhausted and changed the repository to public. With that external premise changed, hosted runners executed normally; subsequent runs produced real platform evidence.
+- **Closure evidence:** run `38156641062` completed successfully across all six declared matrix lanes.
+- **Status:** CLOSED / EXTERNAL BLOCKER RESOLVED.
 
 ## F-005 — cross-platform adversarial tests encoded filesystem-path assumptions
 
@@ -74,8 +74,8 @@
 - **Repair attempt 1:** added a repository-wide LF `.gitattributes` policy. Run `38155953536` showed that this broadened the mismatch because historical blobs with pre-existing line endings were rematerialized differently on checkout.
 - **Final repair:** remove the checkout-policy workaround and make `scripts/verify_manifest.py` hash canonical Git index blobs (`git show :path`) when available, falling back to working-tree bytes only outside a Git checkout. The manifest therefore attests repository content rather than platform-specific checkout materialization.
 - **Runtime source impact:** none.
-- **Reverification:** PENDING full matrix on the canonical-blob verifier commit.
-- **Status:** REPAIR APPLIED / REVERIFY PENDING.
+- **Reverification:** the canonical-blob attempt improved Linux/macOS behavior but Windows still exposed EOL representation variance, leading to F-008. Final closure is provided by run `38156641062` after the F-008 repair.
+- **Status:** CLOSED via superseding F-008 repair.
 
 ## F-007 — manually refreshed manifest carried a stale ledger digest
 
@@ -87,8 +87,8 @@
 - **Earliest invalidated phase:** MANIFEST / EVIDENCE.
 - **Repair:** recompute the ledger digest from the exact committed UTF-8 content and refresh only the authoritative manifest/ledger evidence pair.
 - **Runtime source impact:** none.
-- **Reverification:** PENDING full matrix on the corrected evidence commit.
-- **Status:** REPAIR APPLIED / REVERIFY PENDING.
+- **Reverification:** corrected digest was incorporated before the later F-008 verifier repair; run `38156641062` subsequently passed evidence verification on every matrix lane.
+- **Status:** CLOSED / VERIFIED.
 
 ## F-008 — Windows Git/checkout EOL representation still differed from stored evidence hashes
 
@@ -100,5 +100,5 @@
 - **Earliest invalidated phase:** MANIFEST / EVIDENCE.
 - **Repair:** verifier now checks each expected digest against both working-tree and Git-blob payloads and, for valid UTF-8 text only, the reversible CRLF-to-LF normalization of those payloads. The committed manifest remains a SHA-256 file inventory; arbitrary non-EOL byte changes still fail closed, and path-set mismatches are reported explicitly.
 - **Runtime source impact:** none.
-- **Reverification:** PENDING full Linux/macOS/Windows × Python 3.10/3.13 matrix.
-- **Status:** REPAIR APPLIED / REVERIFY PENDING.
+- **Reverification:** GitHub Actions run `38156641062` completed successfully on commit `cd2c5b45f59667f015371724a7470279b838f6ca`. All six Linux/macOS/Windows × Python 3.10/3.13 jobs passed the full test suite, manifest verification, wheel build, and installed CLI smoke.
+- **Status:** CLOSED / VERIFIED.
