@@ -76,3 +76,16 @@
 - **Runtime source impact:** none.
 - **Reverification:** PENDING full matrix on the canonical-blob verifier commit.
 - **Status:** REPAIR APPLIED / REVERIFY PENDING.
+
+## F-007 — manually refreshed manifest carried a stale ledger digest
+
+- **Phase discovered:** REVERIFY / evidence closure.
+- **Reproducer/evidence:** GitHub Actions run `38156182408`. All completed product test steps were green, but manifest verification failed because `evidence/MANIFEST.sha256` contained an incorrect SHA-256 for the current `evidence/FAILURE_REPAIR_LEDGER.md` blob.
+- **Observed behavior:** the canonical-blob verifier correctly rejected the evidence set on Linux/macOS; the remaining Windows lanes were therefore not used as acceptance evidence.
+- **Affected requirement:** R27 evidence-manifest integrity only.
+- **Root cause:** manifest refresh error while recording the preceding repair; the verifier itself correctly failed closed.
+- **Earliest invalidated phase:** MANIFEST / EVIDENCE.
+- **Repair:** recompute the ledger digest from the exact committed UTF-8 content and refresh only the authoritative manifest/ledger evidence pair.
+- **Runtime source impact:** none.
+- **Reverification:** PENDING full matrix on the corrected evidence commit.
+- **Status:** REPAIR APPLIED / REVERIFY PENDING.
