@@ -89,3 +89,16 @@
 - **Runtime source impact:** none.
 - **Reverification:** PENDING full matrix on the corrected evidence commit.
 - **Status:** REPAIR APPLIED / REVERIFY PENDING.
+
+## F-008 — Windows Git/checkout EOL representation still differed from stored evidence hashes
+
+- **Phase discovered:** REVERIFY / cross-platform evidence.
+- **Reproducer/evidence:** GitHub Actions run `38156394425`. Linux and macOS lanes passed the full tests, manifest, wheel build, and installed CLI smoke. Both Windows lanes passed all 47 tests, then failed only at manifest verification.
+- **Observed behavior:** replacing working-tree hashing with `git show :path` was sufficient on Linux/macOS but still did not make the verifier representation-independent on the Windows runners.
+- **Affected requirement:** R27 evidence-manifest portability only.
+- **Root-cause classification:** platform-dependent text EOL materialization/plumbing representation; no product or test failure was observed.
+- **Earliest invalidated phase:** MANIFEST / EVIDENCE.
+- **Repair:** verifier now checks each expected digest against both working-tree and Git-blob payloads and, for valid UTF-8 text only, the reversible CRLF-to-LF normalization of those payloads. The committed manifest remains a SHA-256 file inventory; arbitrary non-EOL byte changes still fail closed, and path-set mismatches are reported explicitly.
+- **Runtime source impact:** none.
+- **Reverification:** PENDING full Linux/macOS/Windows × Python 3.10/3.13 matrix.
+- **Status:** REPAIR APPLIED / REVERIFY PENDING.
