@@ -13,6 +13,6 @@
 | Million-path synthetic no-op plan completes. | OBSERVED | `scale_local.json`: 1,000,000 paths, 0 ops/conflicts |
 | FerroSync is faster than another sync engine. | NOT CLAIMED | no comparative benchmark |
 | Identical durability semantics hold on every filesystem/OS. | NOT CLAIMED | directory fsync/platform semantics differ |
-| Linux/macOS/Windows support is fully verified. | UNVERIFIED until CI | matrix exists but repository run must be observed |
+| Linux/macOS/Windows support is fully verified. | UNVERIFIED / EXTERNALLY BLOCKED | GitHub Actions run 38154026963 attempts 1 and 2 created all six matrix jobs, but every job failed before runner assignment (`runner_id=0`, no steps/logs). No platform test executed. |
 | Production-ready for arbitrary hostile concurrent writers. | NOT CLAIMED | explicitly outside trust model |
 | Cryptographic authenticity of state against malicious rewrite. | NOT CLAIMED | checksum is corruption detection, not keyed authentication |

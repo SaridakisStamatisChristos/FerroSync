@@ -39,10 +39,10 @@ Statuses in this repository use `VERIFIED | PARTIAL | UNVERIFIED | FAILED | N/A`
 | R21 | Performance/scale harness | `bench.py`, `scale_plan.py` | committed local JSON results; 1,000,000-path planner run | VERIFIED observationally |
 | R22 | CLI minimum commands | `cli.py` | source + installed CLI smoke | VERIFIED locally |
 | R23 | Library API | `SyncPair.open/plan/apply` | integration + stale-plan API tests | VERIFIED locally |
-| R24 | Linux/macOS/Windows target | CI matrix | workflow defined | UNVERIFIED until CI completes on all lanes |
+| R24 | Linux/macOS/Windows target | CI matrix | workflow run 38154026963 attempts 1 and 2 | UNVERIFIED / EXTERNALLY BLOCKED: all six jobs failed before runner assignment; no platform lane executed |
 | R25 | Packaging / clean install | `pyproject.toml` | offline wheel + clean venv installed CLI smoke | VERIFIED locally |
 | R26 | Required documentation | README + 12 docs | repository inspection | VERIFIED |
-| R27 | CI real gates | `.github/workflows/ci.yml` | workflow defined | UNVERIFIED until GitHub run completes |
+| R27 | CI real gates | `.github/workflows/ci.yml` | run 38154026963 attempts 1 and 2 | PARTIAL: workflow/matrix scheduling verified, but all jobs failed pre-run with `runner_id=0`; test/build/smoke steps were not executed remotely |
 | R28 | Evidence system / real manifest | `evidence/*`, `verify_manifest.py` | positive verification + negative tamper test | VERIFIED locally |
 | R29 | No external sync engine | repository implementation | dependency/source inspection | VERIFIED |
 | R30 | State parsing bounded, no executable serialization | 16 MiB bound + JSON only | implementation + corrupt-state tests | VERIFIED locally |

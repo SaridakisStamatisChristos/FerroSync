@@ -26,13 +26,13 @@ Observed after F-001 repair: **47 test methods passed**. The randomized campaign
 The successful offline evidence path was:
 
 ```bash
-python -m pip wheel . --no-deps --no-build-isolation -w dist
-python -m venv /mnt/data/ferrosync-venv
-/mnt/data/ferrosync-venv/bin/python -m pip install --no-index --find-links dist ferrosync
-/mnt/data/ferrosync-venv/bin/ferrosync --version
+python -m pip wheel . --no-deps --no-build-isolation -w dist-final
+python -m venv /mnt/data/ferrosync-final-venv
+/mnt/data/ferrosync-final-venv/bin/python -m pip install --no-index --find-links dist-final ferrosync
+/mnt/data/ferrosync-final-venv/bin/ferrosync --version
 ```
 
-Observed wheel SHA-256 from build output: `8910285618cfdf754c0a767948585e153a301560e99300e90eb14fddcf45ed1f`. Installed version reported `ferrosync 0.1.0`; an installed-CLI one-file sync and verify smoke passed.
+Observed final-revision wheel SHA-256: `04f378f19c5f92920c29c4df52458ed624417b3f4ad2a66dc19af529074e39ee`. Installed version reported `ferrosync 0.1.0`; an installed-CLI one-file sync and verify smoke passed with logical equivalence true and no issues.
 
 ## Manifest negative test
 

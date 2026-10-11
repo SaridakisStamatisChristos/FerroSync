@@ -36,3 +36,16 @@
 - **Repair:** reconstructed `_operation_satisfied` and `_execute_operation` as separate class methods, retained the no-clobber file/symlink/rename logic, then reran targeted race tests followed by the complete suite.
 - **Regression/reverification:** targeted bidirectional/race tests passed; final local suite passed 47/47.
 - **Status:** CLOSED / VERIFIED.
+
+## F-004 — GitHub-hosted matrix jobs failed before runner assignment
+
+- **Phase discovered:** VERIFY / remote CI
+- **Reproducer/evidence:** GitHub Actions run `38154026963`, attempt 1, all six jobs (Ubuntu/macOS/Windows × Python 3.10/3.13). Each completed `failure` with `runner_id=0`, empty `steps`, and no downloadable job log.
+- **Observed behavior:** no repository command, test, build, package, or smoke step executed.
+- **Affected requirement:** R24 cross-platform execution evidence and R27 remote CI gate.
+- **Root-cause classification:** external hosted-runner/pre-execution availability; no product-code failure was observed. Exact account-side cause is not exposed by the available connector metadata.
+- **Earliest invalidated phase:** VERIFY evidence only; CONTRACT/SPEC/implementation are not invalidated by a job that never executed.
+- **Changed evidence path:** checked GitHub public status (Actions reported operational) and performed one failed-jobs retry as attempt 2 to falsify a transient runner-assignment hypothesis.
+- **Reverification:** attempt 2 reproduced the identical result on all six jobs: failure before runner assignment, no steps/logs.
+- **Loop rule:** no further unchanged retry is permitted under R7 without a changed external premise (for example account Actions/billing/runner availability).
+- **Status:** BLOCKED / UNVERIFIED cross-platform CI; local gates remain VERIFIED.

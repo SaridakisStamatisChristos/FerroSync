@@ -1,6 +1,6 @@
 # Final adversarial audit
 
-This audit is intentionally authority-aware: local execution evidence is closed where observed; GitHub cross-platform claims remain pending until actual workflow runs are inspected.
+This audit is intentionally authority-aware: local execution evidence is closed where observed. GitHub Actions run `38154026963` was inspected twice; both attempts failed before any hosted runner was assigned, so cross-platform execution remains unverified rather than being misreported as a product pass or failure.
 
 ## Falsification questions
 
@@ -27,10 +27,12 @@ This audit is intentionally authority-aware: local execution evidence is closed 
 
 ## Residual risks / unresolved evidence
 
-- Actual GitHub Actions execution on Linux/macOS/Windows is not yet observed at the time this file is first generated.
+- GitHub Actions cross-platform execution is externally blocked: run `38154026963`, attempts 1 and 2, created all six Linux/macOS/Windows × Python 3.10/3.13 jobs, but each ended with `runner_id=0`, an empty step list, and no job log. The public GitHub status page reported Actions operational when the retry was initiated, so no GitHub-wide incident was used to excuse the gap.
 - Arbitrary hostile concurrent writers are outside the security contract; there is no portable filesystem compare-and-swap primitive for every final rename race.
 - No comparative performance claim is made.
 
-## Current verdict before remote CI
+## Final verdict
 
-**SYNTHESIS COMPLETE — local verification strong; cross-platform CI evidence pending.**
+**CONDITIONAL — synthesis, local verification, package installation, crash/property/adversarial campaigns, and manifest closure are complete; the hard cross-platform CI execution gate remains UNVERIFIED because GitHub hosted runners never started.**
+
+This is not a code-failure verdict. It is an evidence-availability verdict. Production-readiness must remain conditional until at least one full Linux/macOS/Windows matrix run executes the committed gates successfully.
