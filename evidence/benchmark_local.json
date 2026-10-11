@@ -1,0 +1,46 @@
+{
+  "claim": "observational only; no comparative superiority claim",
+  "environment": {
+    "machine": "x86_64",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "processor": "",
+    "python": "3.13.5"
+  },
+  "initial_sync": {
+    "operations": 200,
+    "repeats": 1,
+    "seconds_median": 3.3216557509999802,
+    "seconds_min": 3.3216557509999802
+  },
+  "recovery": {
+    "repeats": 1,
+    "seconds_median": 0.018669463999913205,
+    "seconds_min": 0.018669463999913205,
+    "status": "RECOVERED"
+  },
+  "rename_plan": {
+    "conflicts": 0,
+    "operations": 20,
+    "renamed_files": 20,
+    "repeats": 1,
+    "seconds_median": 0.013150633999998718,
+    "seconds_min": 0.013150633999998718
+  },
+  "scan": {
+    "repeats": 3,
+    "seconds_median": 0.004754928000011205,
+    "seconds_min": 0.004450098999996044
+  },
+  "state_bytes": 272803,
+  "unchanged_plan": {
+    "conflicts": 0,
+    "operations": 0,
+    "repeats": 3,
+    "seconds_median": 0.012503463000030024,
+    "seconds_min": 0.01231194100000721
+  },
+  "workload": {
+    "bytes_per_file": 4096,
+    "files": 200
+  }
+}

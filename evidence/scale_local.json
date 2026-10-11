@@ -1,0 +1,11 @@
+{
+  "conflicts": 0,
+  "deterministic_noop": true,
+  "max_rss_kib": 919044,
+  "note": "shared immutable snapshot objects; measures planner path/classification scale, not filesystem scanning",
+  "operations": 0,
+  "paths": 1000000,
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "python": "3.13.5",
+  "seconds": 6.695499890000065
+}
